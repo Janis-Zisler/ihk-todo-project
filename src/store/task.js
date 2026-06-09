@@ -1,7 +1,7 @@
 // /store/task.js
 
 import { defineStore } from "pinia";
-import { supabase } from "../utils/supabase";
+import { supabase } from "@/utils/supabase";
 
 export const useTaskStore = defineStore("tasks", {
   state: () => ({

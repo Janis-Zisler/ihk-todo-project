@@ -1,7 +1,7 @@
 // /store/user.js
 
 import { defineStore } from 'pinia';
-import { supabase } from '../utils/supabase';
+import { supabase } from '@/utils/supabase';
 
 export const useUserStore = defineStore('user', {
   state: () => ({
