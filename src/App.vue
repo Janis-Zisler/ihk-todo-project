@@ -1,12 +1,10 @@
 <template>
   <v-app>
-    <AppHeader></AppHeader>
-
-
-
-
-    
-    <router-view class="app-main" /> <!-- your routes will load inside of these tags -->
+    <AppHeader />
+    <v-divider :thickness="20" />
+    <v-main>
+      <router-view class="app-main" /> <!-- your routes will load inside of these tags -->
+    </v-main>
   </v-app>
 </template>
 
@@ -15,16 +13,14 @@ import { onMounted } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useRouter } from 'vue-router'
 import { useUserStore } from '@/store/user.js'
-import { useTheme } from 'vuetify';
 import AppHeader from '@/components/AppHeader.vue';
 
 const router = useRouter();
 const userStore = useUserStore();
-const { user, theme } = storeToRefs(userStore);
+const { user } = storeToRefs(userStore);
 
 onMounted(async () => {
   try {
-    //useTheme().change( userStore.theme );
     await userStore.fetchUser() // here we call fetch user
     if (!user.value) {
       // redirect them to logout if the user is not there
@@ -37,9 +33,5 @@ onMounted(async () => {
     console.log(e.message);
   }
 })
-
-/* onMounted(() => {
-  useTheme().change(userStore.getTheme);
-}) */
 
 </script>

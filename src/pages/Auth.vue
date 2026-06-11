@@ -1,15 +1,18 @@
 <script setup>
 import { ref } from 'vue'
-import { useRouter } from 'vue-router'
-import { useUserStore } from '@/store/user.js'
+import SignIn from '@/components/SignIn.vue'
+import SignUp from '@/components/SignUp.vue'
 
-const router = useRouter()
-const userStore = useUserStore()
+const showSignIn = ref(true)
 </script>
 
-<template>
-    <div class="auth">
-        <h1>Auth</h1>
-        <button @click="userStore.signIn('a36lq086w@mozmail.com', '~5RqPe5]+@V2H3j'); router.push('/')">Login</button>
-    </div>
+<template class="auth">
+    <v-switch
+        v-model="showSignIn"
+        :label="showSignIn ? 'Sign In' : 'Sign Up'"
+    />
+    <SignIn v-show="showSignIn" />
+    <SignUp v-show="!showSignIn" />
+        
+    
 </template>
