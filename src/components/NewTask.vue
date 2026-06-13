@@ -25,7 +25,7 @@
 </template>
 
 <script setup>
-import { ref, defineEmits } from 'vue'
+import { ref } from 'vue'
 import { useTaskStore } from '@/store/task.js'
 
 const emit = defineEmits(['close'])

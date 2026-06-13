@@ -54,19 +54,12 @@ export const useUserStore = defineStore('user', {
        }
     },
   
-    persist: {
-      enabled: true,
-      strategies: [
-        {
-          key: 'user',
-          storage: localStorage
-        },
-        {
-          key: 'theme',
-          storage: localStorage
-        }
-      ]
-    },
+    //persist: true, 
+    persist:{
+      key: 'user',
+      storage: localStorage,
+      debug: true,
+    }, 
  },
  getters: {
     isSignedIn: (state) => state.user === null ? false : true,

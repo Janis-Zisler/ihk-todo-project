@@ -3,7 +3,13 @@
     <AppHeader />
     <v-divider :thickness="20" />
     <v-main>
-      <router-view class="app-main" /> <!-- your routes will load inside of these tags -->
+      <v-container>
+        <v-row>
+          <v-col cols="12" md="10" lg="8" class="mx-auto">
+            <router-view class="app-main" /> <!-- your routes will load inside of these tags -->
+          </v-col>
+        </v-row>
+      </v-container>
     </v-main>
   </v-app>
 </template>

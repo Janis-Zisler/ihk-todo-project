@@ -37,6 +37,7 @@ onMounted(async () => {
                         density="compact"
                         bg-color="info"
                         rounded="true"
+                        hide-details
                     >
                     </v-select>
                 </v-col>

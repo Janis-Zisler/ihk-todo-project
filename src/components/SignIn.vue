@@ -27,15 +27,16 @@
 import { ref } from 'vue'
 
 import { useRouter } from 'vue-router'
-const router = useRouter()
+const router = useRouter();
 
 import { useUserStore } from '@/store/user.js'
-const userStore = useUserStore()
+const userStore = useUserStore();
 
 const email = ref('');
 const password = ref('');
 
 const signIn = () => {
     userStore.signIn(email.value, password.value);
+    router.push({ path: '/' });
 }
 </script>
