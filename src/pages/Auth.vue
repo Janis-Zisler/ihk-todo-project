@@ -20,7 +20,7 @@ const tab = ref('in');
             <SignIn />
         </v-tabs-window-item>
         <v-tabs-window-item value="up">
-            <SignUp />
+            <SignUp @goto-sign-in="tab = 'in'" />
         </v-tabs-window-item>
     </v-tabs-window>
     </v-sheet>

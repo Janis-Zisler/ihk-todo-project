@@ -18,7 +18,7 @@
                     label="Password"
                     type="password"
                     required
-                    :rules="[rules.required]"
+                    :rules="[rules.required, rules.passwordLength]"
                 />
                 <v-text-field
                     v-model="passwordConfirm"
@@ -39,7 +39,11 @@
             >Sign Up</v-btn>
         </v-card-actions>
 
-        <v-dialog v-model="showDialog" max-width="340">
+        <v-dialog 
+            v-model="showDialog" 
+            max-width="340" 
+            @click:outside="closeDialog"
+        >
             <v-card
                 prepend-icon="mdi-at"
                 text="Please check your email and click the confirmation link."
@@ -49,11 +53,15 @@
                     <v-btn
                         class="ml-auto"
                         text="Close"
-                        @click="emit('gotoSignIn')"
+                        @click="closeDialog"
                     />
                 </template>
             </v-card>
         </v-dialog>
+        <ShowErrorMsg 
+            v-bind="errorObj" 
+            @update:show-error="errorObj.showError = $event.showError" 
+        />
     </v-card>
 
     
@@ -61,7 +69,8 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
+import ShowErrorMsg from './ShowErrorMsg.vue';
+import { ref, reactive, computed } from 'vue'
 
 import { useRouter } from 'vue-router'
 const router = useRouter()
@@ -69,10 +78,18 @@ const router = useRouter()
 import { useUserStore } from '@/store/user.js'
 const userStore = useUserStore()
 
+const emit = defineEmits(['gotoSignIn']);
+
+
 const formComplete = ref(false);
 const email = ref('');
 const password = ref('');
 const passwordConfirm = ref('');
+
+const errorObj = reactive({
+    showError: false,
+    errorMessage: '',
+});
 const showDialog = computed({
     get() {
         return currentStatus.value === 'confirm-email';
@@ -83,24 +100,41 @@ const showDialog = computed({
         }
     }
 });
+const closeDialog = () => {
+    emit('gotoSignIn');
+    showDialog.value = false;
+}
 const currentStatus = ref('logged-out');
 
-const signUp = () => {
+const signUp = async () => {
     currentStatus.value = 'sending-data';
-    if (password.value !== passwordConfirm.value) {
-        // Handle password mismatch error
+    if (password.value !== passwordConfirm.value) { // Passwords identical?
+        errorObj.errorMessage = 'Passwords do not match.';
+        errorObj.showError = true;
         return;
     }
-    userStore.signUp(email.value, password.value);
 
-    currentStatus.value = 'confirm-email';
+    if (password.value.length < 6) { // Password min lenght ?
+        errorObj.errorMessage = 'Password must be at least 6 characters long.';
+        errorObj.showError = true;
+        return;
+    }
+
+    try {
+        await userStore.signUp(email.value, password.value);
+        currentStatus.value = 'confirm-email';
+    }
+    catch (error) {
+        errorObj.errorMessage = error.message || 'Failed to sign up. Please try again.';
+        errorObj.showError = true;
+        currentStatus.value = 'logged-out';
+    }
 }
-
-const emit = defineEmits(['gotoSignIn']);
 
 const rules = {
     required: value => !!value || 'Field is required',
-    email: value => /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(value) || 'Email is invalid',
-    passwordMatch: (value, other) => value === other || 'Passwords do not match'
+    email: value => /^[\w.+-]+@[\w-]+(?:\.[\w-]{2,})+$/.test(value) || 'Email is invalid',
+    passwordMatch: (value, other) => value === other || 'Passwords do not match',
+    passwordLength: value => value.length >= 6 || 'Password must be at least 6 characters long'
 }
 </script>

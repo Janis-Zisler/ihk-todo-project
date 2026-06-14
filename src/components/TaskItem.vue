@@ -4,7 +4,7 @@
             <v-checkbox
                 v-model="task.is_complete"
                 hide-details
-                color="primary"
+                color="success"
             />
         </template>
 

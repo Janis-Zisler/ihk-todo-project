@@ -9,6 +9,7 @@ export const useUserStore = defineStore('user', {
   state: () => ({
     user: null,
     theme: 'system',
+    // Theme Colors: ./node_modules/vuetify/lib/composables/theme.js
   }),
 
   // Actions
@@ -26,7 +27,7 @@ export const useUserStore = defineStore('user', {
       if (error) throw error;
       if (data) this.user = data.user;
     },
-    async signIn (email, password) {
+    async signIn (email, password,targetPage = '/') {
       const { data, error } = await supabase.auth.signInWithPassword({
         email: email,
         password: password
@@ -56,8 +57,9 @@ export const useUserStore = defineStore('user', {
   
     //persist: true, 
     persist:{
-      key: 'user',
+      key: 'userStore',
       storage: localStorage,
+      pick: ['user', 'theme'],
       debug: true,
     }, 
  },
