@@ -11,6 +11,9 @@
         </v-row>
       </v-container>
     </v-main>
+    <v-footer>
+      <ShowErrorMsg />
+    </v-footer>
   </v-app>
 </template>
 
@@ -20,6 +23,7 @@ import { storeToRefs } from 'pinia'
 import { useRouter } from 'vue-router'
 import { useUserStore } from '@/store/user.js'
 import AppHeader from '@/components/AppHeader.vue';
+import ShowErrorMsg from './components/ShowErrorMsg.vue';
 
 const router = useRouter();
 const userStore = useUserStore();

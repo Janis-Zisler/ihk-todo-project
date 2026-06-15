@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { useTaskStore } from '@/store/task';
-import { storeToRefs } from 'pinia';
 import { ref, onMounted } from 'vue';
 import NewTask from '@/components/NewTask.vue';
 import TaskItem from '@/components/TaskItem.vue';

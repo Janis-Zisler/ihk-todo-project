@@ -10,6 +10,12 @@ export const useUserStore = defineStore('user', {
     user: null,
     theme: 'system',
     // Theme Colors: ./node_modules/vuetify/lib/composables/theme.js
+    rules: {
+      required: value => !!value || 'Field is required',
+      email: value => /^[\w.+-]+@[\w-]+(?:\.[\w-]{2,})+$/.test(value) || 'Email is invalid',
+      passwordMatch: (value, other) => value === other || 'Passwords do not match',
+      passwordLength: value => value.length >= 6 || 'Password must be at least 6 characters long'
+   }
   }),
 
   // Actions
@@ -35,6 +41,8 @@ export const useUserStore = defineStore('user', {
       
       if (error) throw error;
       if (data) this.user = data.user;
+
+      router.push(targetPage);
     },
     async signOut () {
       const { error } = await supabase.auth.signOut();

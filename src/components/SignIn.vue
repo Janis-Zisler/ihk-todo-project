@@ -10,8 +10,8 @@
                     required
                     @keyup.enter="signIn"
                     :rules="[
-                        value => !!value || 'Field is required',
-                        value => /^[\w.+-]+@[\w-]+(?:\.[\w-]{2,})+$/.test(value) || 'Email is invalid',
+                        rules.required,
+                        rules.email
                     ]"
                 />
                 <v-text-field
@@ -21,34 +21,11 @@
                     required
                     @keyup.enter="signIn"
                     :rules="[
-                        value => !!value || 'Field is required',
-                        value => value.length >= 6 || 'Password must be at least 6 characters long'
+                        rules.required,
+                        rules.passwordLength
                     ]"
                 />
             </v-form>
-
-            <!-- <v-snackbar 
-                v-model="errorObj.showError.show" 
-                color="error"
-                timeout="15000"
-                prepend-icon="mdi-cancel"
-                timer="bottom"
-                timer-color="text"
-                contained
-            >
-                {{ errorObj.errorMessage }}
-                <template #actions>
-                    <v-btn
-                        class="ml-auto"
-                        text="Close"
-                        @click="errorObj.showError.show = false"
-                    />
-                </template>
-            </v-snackbar>  -->
-            <ShowErrorMsg 
-                v-bind="errorObj" 
-                @update:show-error="errorObj.showError = $event.showError" 
-            />
         </v-card-text>
         <v-card-actions class="justify-center">
             <v-btn 
@@ -66,18 +43,21 @@ import { ref, reactive } from 'vue'
 import { useRouter } from 'vue-router'
 const router = useRouter();
 
+// Stores
 import { useUserStore } from '@/store/user.js'
-import ShowErrorMsg from './ShowErrorMsg.vue';
+import { useErrorStore } from '@/store/error.js'
 const userStore = useUserStore();
+const errorStore = useErrorStore();
 
+const { rules } = useUserStore();
+// Data
 const email = ref('');
 const password = ref('');
 const formComplete = ref(false);
 
 const errorObj = reactive({
-    showError: false,
-    errorMessage: '',
-    //contained: true,
+    showError: true,
+    message: '',
 });
 
 const signIn = async () => {
@@ -85,8 +65,8 @@ const signIn = async () => {
     try {
         await userStore.signIn(email.value, password.value);
     } catch (error) {
-        errorObj.errorMessage = error.message || 'Failed to sign in. Please check your email and password.';
-        errorObj.showError = true;
+        errorObj.message = error.message || 'Failed to sign in. Please check your email and password.';
+        errorStore.addNewError( errorObj );
     }
 }
 </script>

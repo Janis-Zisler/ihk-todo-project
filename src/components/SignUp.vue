@@ -58,10 +58,6 @@
                 </template>
             </v-card>
         </v-dialog>
-        <ShowErrorMsg 
-            v-bind="errorObj" 
-            @update:show-error="errorObj.showError = $event.showError" 
-        />
     </v-card>
 
     
@@ -69,14 +65,16 @@
 </template>
 
 <script setup>
-import ShowErrorMsg from './ShowErrorMsg.vue';
-import { ref, reactive, computed } from 'vue'
+import { ref, reactive, computed, toRefs } from 'vue'
 
 import { useRouter } from 'vue-router'
 const router = useRouter()
 
 import { useUserStore } from '@/store/user.js'
 const userStore = useUserStore()
+
+import { useErrorStore } from '@/store/error.js'
+const errorStore = useErrorStore();
 
 const emit = defineEmits(['gotoSignIn']);
 
@@ -87,8 +85,8 @@ const password = ref('');
 const passwordConfirm = ref('');
 
 const errorObj = reactive({
-    showError: false,
-    errorMessage: '',
+    showError: true,
+    message: '',
 });
 const showDialog = computed({
     get() {
@@ -107,34 +105,32 @@ const closeDialog = () => {
 const currentStatus = ref('logged-out');
 
 const signUp = async () => {
+    // Validation
     currentStatus.value = 'sending-data';
     if (password.value !== passwordConfirm.value) { // Passwords identical?
-        errorObj.errorMessage = 'Passwords do not match.';
-        errorObj.showError = true;
+        errorObj.message = 'Passwords do not match.';
+        errorStore.addNewError(errorObj);
         return;
     }
 
     if (password.value.length < 6) { // Password min lenght ?
-        errorObj.errorMessage = 'Password must be at least 6 characters long.';
-        errorObj.showError = true;
+        errorObj.message = 'Password must be at least 6 characters long.';
+        errorStore.addNewError(errorObj);
         return;
     }
 
+    // Sign up @ userStore->supabase
     try {
         await userStore.signUp(email.value, password.value);
         currentStatus.value = 'confirm-email';
     }
     catch (error) {
-        errorObj.errorMessage = error.message || 'Failed to sign up. Please try again.';
-        errorObj.showError = true;
+        errorObj.message = error.message || 'Failed to sign up. Please try again.';
+        errorStore.addNewError(errorObj);
         currentStatus.value = 'logged-out';
     }
 }
 
-const rules = {
-    required: value => !!value || 'Field is required',
-    email: value => /^[\w.+-]+@[\w-]+(?:\.[\w-]{2,})+$/.test(value) || 'Email is invalid',
-    passwordMatch: (value, other) => value === other || 'Passwords do not match',
-    passwordLength: value => value.length >= 6 || 'Password must be at least 6 characters long'
-}
+const { rules } = toRefs(userStore);
+
 </script>
