@@ -52,7 +52,6 @@ const addTask = async () => {
     } catch (error) {
         console.log(error);
         errorObj.message = error.message || 'Failed to add task. Please try again.';
-        errorObj.showError = true;
         errorStore.addNewError(errorObj);
         isLoading.value = false
     }
