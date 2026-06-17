@@ -10,7 +10,7 @@ export const useErrorStore = defineStore('error', () => {
 
     const defaultError = {
         message: '',
-        showError: false,
+        showError: true,
         autoDelete: true,
         autoClose: 15000,
 
@@ -34,6 +34,7 @@ export const useErrorStore = defineStore('error', () => {
             }
         ) 
         );
+        console.log("Adding error:", ErrOptions);
     }
     
     // Watch for changes in the error list delete expired errors

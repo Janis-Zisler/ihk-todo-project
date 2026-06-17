@@ -56,7 +56,7 @@ onMounted(async () => {
                         <TaskItem 
                             v-for="task in taskStore.tasks"
                             :key="task.id"
-                            :task="task"
+                            :taskID="task.id"
                         />
                     </v-list>
                 </v-col>
