@@ -50,8 +50,8 @@ const addTask = async () => {
         isLoading.value = false
         emit('close');
     } catch (error) {
-        console.log(error);
-        errorObj.message = error.message || 'Failed to add task. Please try again.';
+        //errorObj.message = error.message || 'Failed to add task. Please try again.';
+        errorObj.message = 'Failed to add task. Please try again. (min 4 characters)';
         errorStore.addNewError(errorObj);
         isLoading.value = false
     }

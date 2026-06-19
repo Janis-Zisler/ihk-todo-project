@@ -24,7 +24,7 @@ export const useErrorStore = defineStore('error', () => {
 
     
     const addNewError = (ErrOptions = defaultError) => {
-        //console.log("Adding error:", ErrOptions);
+        
         errorList.value.push( 
             reactive(
                 {

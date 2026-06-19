@@ -63,10 +63,13 @@ import { watch, onMounted,  } from 'vue'
 import { useDisplay, useTheme } from 'vuetify'
 import { storeToRefs } from 'pinia'
 import { useUserStore } from '@/store/user.js'
+import { useErrorStore } from '@/store/error.js'
 import { useRouter } from 'vue-router'
 
 const userStore = useUserStore();
 const vuetifyTheme = useTheme();
+const errorStore = useErrorStore();
+
 const { user, theme } = storeToRefs(userStore);
 const ruter = useRouter();
 
@@ -80,8 +83,8 @@ watch(theme, (newTheme) => {
 onMounted(async () => {
   try { // Apply saved theme on mount
     vuetifyTheme.change(userStore.theme);
-  } catch (e) {
-    console.log(e.message);
+  } catch (error) {
+    errorStore.addNewError({ message: error.message });
   }
 });
 </script>

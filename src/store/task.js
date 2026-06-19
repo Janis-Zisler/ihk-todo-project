@@ -18,8 +18,6 @@ export const useTaskStore = defineStore("tasks", {
       this.tasks = tasks;
     },
     async addTask(taskMsg) { // Insert the new task into the database
-      console.log("Adding task:", taskMsg);
-      
       const { data, error } = await supabase
         .from("todos")
         .insert({ 
@@ -30,15 +28,12 @@ export const useTaskStore = defineStore("tasks", {
 
       if (error) console.log("Adding task error:", error);
       if (error) throw error;
-      if (data) console.log( "Adding task data:", data);
       if (data) this.tasks.unshift(data[0]);
 
     },
-    async updateTask(id, taskMsg = null, taskComplete = null) { // Update the task in the database
-      console.log("Updating task:", taskMsg, taskComplete, id);
-
+    // Update the task in the database
+    async updateTask(id, taskMsg = null, taskComplete = null) { 
       const index = this.indexOfId[id];
-      //console.log("Updating task index:", index);
       const { data, error } = await supabase
         .from("todos")
         .update({
@@ -50,11 +45,10 @@ export const useTaskStore = defineStore("tasks", {
 
       if (error) console.log("Updating task error:", error);
       if (error) throw error;
-      if (data) console.log( "Updating task data:", data);
       if (data) this.tasks[index] = data[0];
     },
-    async deleteTask(taskId) { // Delete the task from the database
-      console.log("Deleting task:", taskId);
+    // Delete the task from the database
+    async deleteTask(taskId) { 
       const { data, error } = await supabase
         .from("todos")
         .delete()
@@ -65,7 +59,6 @@ export const useTaskStore = defineStore("tasks", {
       if (error) throw error;
 
       const index = this.indexOfId[taskId];
-      if (data) console.log( "Deleting task data:", data, index);
       if (data) this.tasks.splice(index, 1);
     },
     reset() { // Reset tasks

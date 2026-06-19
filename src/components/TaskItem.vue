@@ -91,21 +91,27 @@ watch(() => props.task.task, (val) => { newTaskMessage.value = val })
 
 const updateTaskMessage = async () => {
     try {
-        await taskStore.updateTask(currentTask.value.id, newTaskMessage.value, currentTask.value.is_complete);
+        await taskStore.updateTask(
+            currentTask.value.id, newTaskMessage.value, currentTask.value.is_complete
+        );
 
         //newTaskMessage.value = currentTask.task;
         updateTaskVisible.value = false;
     } catch (error) {
-        console.log("There was an Error in updateTask:", error.message);
-        errorStore.addNewError( { message: error.message || 'Failed to update task. Please try again.' } );
+        errorStore.addNewError( { 
+            //message: error.message || 'Failed to update task. Please try again.' 
+            message: 'Failed to update task. Please try again. (min 4 characters)'
+        } );
     }
 }
 
 const toggleComplete = async () => {
   try {
-    await taskStore.updateTask(currentTask.value.id, null, !currentTask.value.is_complete)
+    await taskStore.updateTask(currentTask.value.id, null, !currentTask.value.is_complete);
   } catch (error) {
-    errorStore.addNewError({ message: error.message || 'Failed to toggle complete.' })
+    errorStore.addNewError({ 
+        message: error.message || 'Failed to toggle complete.' 
+    });
   }
 }
 
@@ -113,8 +119,9 @@ const deleteTask = async () => {
     try {
         await taskStore.deleteTask(currentTask.value.id);
     } catch (error) {
-        console.log("There was an Error in deleteTask:", error);
-        errorStore.addNewError( { message: error.message || 'Failed to delete task. Please try again.' } );
+        errorStore.addNewError( { 
+            message: error.message || 'Failed to delete task. Please try again.' 
+        } );
     }
 }
 
