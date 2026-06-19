@@ -68,16 +68,15 @@ export const useUserStore = defineStore('user', {
       this.theme = 'system';
       useTaskStore().reset(); // Reset tasks
     },
-  
-    //persist: true, 
-    persist:{
-      key: 'userStore',
-      storage: localStorage,
-      pick: ['user', 'theme'],
-      debug: true,
-    }, 
  },
- getters: {
+  //persist: true, 
+  persist:{
+    key: 'userStore',
+    storage: localStorage,
+    pick: ['user', 'theme'],
+    debug: true,
+  },
+  getters: {
     isSignedIn: (state) => state.user === null ? false : true,
     getTheme: (state) => state.theme
   }

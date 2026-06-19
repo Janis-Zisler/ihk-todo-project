@@ -78,6 +78,11 @@ export const useTaskStore = defineStore("tasks", {
       const index = this.indexOfId[id];
       return this.tasks[index] || null;
     },
+    filteredTasks(filter) {
+      if (filter === 'All') return this.tasks;
+      if (filter === 'Completed') return this.orderedTasks.completed;
+      if (filter === 'Ongoing') return this.orderedTasks.ongoing;
+    }
   },
   getters: {
     // return an Array with IDs: indexes
@@ -87,5 +92,10 @@ export const useTaskStore = defineStore("tasks", {
         [task.id]: index
       }
     }, {}),
-  },
+    orderedTasks: (state) => state.tasks.reduce((tasks, task, index) => {
+      if (task.is_complete) tasks.completed.push(task);
+      else tasks.ongoing.push(task);
+      return tasks;
+    }, { completed: [], ongoing: [] })
+  }
 });

@@ -16,7 +16,8 @@
                 <v-col>
                     <v-select 
                         label="" 
-                        :items="filters" v-model="selectedFilter"
+                        :items="filters" 
+                        v-model="selectedFilter"
                         density="compact"
                         bg-color="info"
                         rounded="true"
@@ -33,12 +34,9 @@
                         <v-list-item v-if="showNewTask">
                             <NewTask @close="showNewTask = false" />
                         </v-list-item>
-                        <!-- <TaskItem 
-                            v-for="task in taskStore.filteredTasks(selectedFilter)"
-                            :key="task.id"
-                        /> -->
+                        
                         <TaskItem 
-                            v-for="task in taskStore.tasks"
+                            v-for="task in taskStore.filteredTasks(selectedFilter)"
                             :key="task.id"
                             :task="task"
                         />
@@ -56,7 +54,7 @@ import NewTask from '@/components/NewTask.vue';
 import TaskItem from '@/components/TaskItem.vue';
 
 const taskStore = useTaskStore();
-const filters = ref(['All', 'Completed', 'Pending']);
+const filters = ref(['All', 'Ongoing', 'Completed']);
 const selectedFilter = ref('All');
 const showNewTask = ref(false);
 
