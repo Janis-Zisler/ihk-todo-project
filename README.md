@@ -1,39 +1,99 @@
-# ihk-todo-project
+# IHK Todo Project
 
-This template should help get you started developing with Vue 3 in Vite.
+A Vue 3 + Vite todo application with Supabase authentication and task persistence.
 
-## Recommended IDE Setup
+## Features
 
-[VS Code](https://code.visualstudio.com/) + [Vue (Official)](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
+- Email/password sign up and sign in using Supabase Auth
+- Protected dashboard route for authenticated users
+- Create, update, complete, and delete todo tasks
+- Task filtering by All, Ongoing, and Completed
+- Persistent user session via Pinia + localStorage
+- Responsive UI built with Vuetify 4
 
-## Recommended Browser Setup
+## Built With
 
-- Chromium-based browsers (Chrome, Edge, Brave, etc.):
-  - [Vue.js devtools](https://chromewebstore.google.com/detail/vuejs-devtools/nhdogjmejiglipccpnnnanhbledajbpd)
-  - [Turn on Custom Object Formatter in Chrome DevTools](http://bit.ly/object-formatters)
-- Firefox:
-  - [Vue.js devtools](https://addons.mozilla.org/en-US/firefox/addon/vue-js-devtools/)
-  - [Turn on Custom Object Formatter in Firefox DevTools](https://fxdx.dev/firefox-devtools-custom-object-formatters/)
+- Vue 3
+- Vite
+- Pinia
+- Vue Router
+- Vuetify 4
+- Supabase
+- ESLint
 
-## Customize configuration
+## Project Structure
 
-See [Vite Configuration Reference](https://vite.dev/config/).
+- `src/main.js` - app entry, router and Pinia registration
+- `src/router/index.js` - app routes: `/auth` and `/`
+- `src/pages/Auth.vue` - authentication page with sign in / sign up tabs
+- `src/pages/Dashboard.vue` - task dashboard with filter and add task UI
+- `src/store/user.js` - user store and Supabase auth actions
+- `src/store/task.js` - task store with Supabase todo CRUD
+- `src/utils/supabase.ts` - Supabase client initialization
 
-## Project Setup
+## Environment Setup
+
+This project requires Supabase environment variables.
+
+Create a `.env` or `.env.local` file in the project root with:
+
+```env
+VITE_SUPABASE_URL=https://your-supabase-project-url.supabase.co
+VITE_SUPABASE_PUBLISHABLE_KEY=your-public-anon-key
+```
+
+## Supabase Requirements
+
+1. Create a Supabase project.
+2. Enable Email / Password authentication.
+3. Create a `todos` table with columns:
+   - `id` (integer, primary key, auto increment)
+   - `user_id` (text)
+   - `task` (text)
+   - `is_complete` (boolean)
+4. Configure row-level security or policies so authenticated users can read/write their own tasks if needed.
+
+## Installation
 
 ```sh
 npm install
 ```
 
-### Compile and Hot-Reload for Development
+## Development
 
 ```sh
 npm run dev
 ```
 
-### Compile and Minify for Production
+Open the URL shown in the terminal to view the app.
+
+## Build
 
 ```sh
 npm run build
 ```
-# ihk-todo-project
+
+## Preview Production Build
+
+```sh
+npm run preview
+```
+
+## Linting
+
+```sh
+npm run lint
+npm run lint:fix
+```
+
+## Notes
+
+- The app automatically checks the current Supabase user on load in `App.vue`.
+- Tasks are fetched from Supabase on dashboard mount.
+- The task store uses `filteredTasks()` to show filtered results.
+- The sign-up flow displays a confirmation dialog when registration succeeds.
+
+## License
+
+This project does not include a license by default.
+
