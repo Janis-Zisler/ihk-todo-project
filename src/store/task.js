@@ -6,7 +6,7 @@ import { useUserStore } from "./user";
 
 export const useTaskStore = defineStore("tasks", {
   state: () => ({
-    tasks: null,
+    tasks: [],
     isLoading: false,
   }),
   actions: {
@@ -34,16 +34,16 @@ export const useTaskStore = defineStore("tasks", {
       if (data) this.tasks.unshift(data[0]);
 
     },
-    async updateTask(id, taskMsg = null) { // Update the task in the database
-      console.log("Updating task:", taskMsg, id);
+    async updateTask(id, taskMsg = null, taskComplete = null) { // Update the task in the database
+      console.log("Updating task:", taskMsg, taskComplete, id);
 
-      const index = this.indexOfIdMap.get(id);
-      console.log("Updating task index:", index);
+      const index = this.indexOfId[id];
+      //console.log("Updating task index:", index);
       const { data, error } = await supabase
         .from("todos")
         .update({
-          task: taskMsg || this.tasks[index].task, 
-          is_complete: this.tasks[index].is_complete
+          task: taskMsg ?? this.tasks[index].task, 
+          is_complete: taskComplete ?? this.tasks[index].is_complete
         })
         .eq('id', id)
         .select();
@@ -64,7 +64,7 @@ export const useTaskStore = defineStore("tasks", {
       if (error) console.log("Deleting task error:", error);
       if (error) throw error;
 
-      const index = this.indexOfIdMap.get(taskId);
+      const index = this.indexOfId[taskId];
       if (data) console.log( "Deleting task data:", data, index);
       if (data) this.tasks.splice(index, 1);
     },
@@ -75,13 +75,17 @@ export const useTaskStore = defineStore("tasks", {
     },
 
     getTaskById(id) { // Get task by id
-      const index = this.indexOfIdMap.get(id);
+      const index = this.indexOfId[id];
       return this.tasks[index] || null;
     },
   },
   getters: {
-    indexOfIdMap: (state) => {
-      return new Map((state.tasks || []).map((task, index) => [task.id, index])); // 
-    },
+    // return an Array with IDs: indexes
+    indexOfId: (state) =>  state.tasks.reduce((tasks, task, index) => {
+      return {
+        ...tasks,
+        [task.id]: index
+      }
+    }, {}),
   },
 });

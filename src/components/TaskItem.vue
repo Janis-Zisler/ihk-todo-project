@@ -2,45 +2,48 @@
     <v-list-item>
         <template #prepend>
             <v-checkbox
-                v-model="currentTask.is_complete"
+                :model-value="currentTask.is_complete"
                 hide-details
                 color="success"
-                @click="updateTask"
+                @change="toggleComplete"
             />
         </template>
 
         <v-list-item-title 
-            v-if="!showUpdateTask"
-            :class="currentTask.is_complete ? 'text-decoration-line-through' : ''
-        ">
+            v-if="!updateTaskVisible"
+            :class="currentTask.is_complete ? 'text-decoration-line-through' : '' "
+            @dblclick="updateTaskVisible = true"
+            @click="toggleComplete"
+        >
             {{ currentTask.task }}
         </v-list-item-title>
-        <v-list-item-subtitle v-if="!showUpdateTask">
-            {{ currentTask.inserted_at }}
+        <v-list-item-subtitle v-if="!updateTaskVisible">
+            {{ createdAt }}
         </v-list-item-subtitle>
 
-        <template v-if="showUpdateTask">
+        <template v-if="updateTaskVisible">
             <v-text-field
-                v-model="updatedTaskMsg"
-                @keyup.enter="updateTask"
+                v-model="newTaskMessage"
+                @keyup.enter="updateTaskMessage"
+                @keyup.esc="updateTaskVisible = false"
             />
         </template>
 
         <template #append>
-            <template v-if="!showUpdateTask">
+            <template v-if="!updateTaskVisible">
                 <v-btn
                     icon="mdi-delete-circle-outline"
                     variant="text"
                     color="error"
                     size="small"
-                    @click="deleteTask(taskID)"
+                    @click="deleteTask"
                 />
                 <v-btn
                     icon="mdi-pencil-circle-outline"
                     variant="text"
                     color="warning"
                     size="small"
-                    @click="showUpdateTask = true"
+                    @click="updateTaskVisible = true"
                 />
             </template>
             <template v-else>
@@ -49,66 +52,66 @@
                     variant="text"
                     color="success"
                     size="small"
-                    @click="updateTask"
+                    @click="updateTaskMessage"
                 />
                 <v-btn
                     icon="mdi-close-circle-outline"
                     variant="text"
                     color="error"
                     size="small"
-                    @click="showUpdateTask = false"
+                    @click="updateTaskVisible = false"
                 />
             </template>
         </template>
-        
-        
-
-        
-            
-        
     </v-list-item>
 </template>
 
 <script setup>
 import { useTaskStore } from '@/store/task.js'
 import { useErrorStore } from '@/store/error.js'
-import { defineProps, ref, reactive } from 'vue'
+import { defineProps, ref, computed, watch } from 'vue'
 
 const props = defineProps({
-    taskID: {
-        type: Number || String,
-        required: true
-    }
+    task: { type: Object, required: true }
 });
-
+    
 const taskStore = useTaskStore();
 const errorStore = useErrorStore();
 
-const currentTask = reactive( taskStore.getTaskById(props.taskID) );
-const showUpdateTask = ref(false);
-const updatedTaskMsg = ref(currentTask.task);
+const currentTask = computed(() => props.task);
 
-console.log("Current Task:", currentTask);
+const updateTaskVisible = ref(false);
+const newTaskMessage = ref(props.task.task);
 
+const createdAt = computed(() => 
+    new Date(props.task.inserted_at).toLocaleString()
+);
 
-const updateTask = async () => {
+watch(() => props.task.task, (val) => { newTaskMessage.value = val })
+
+const updateTaskMessage = async () => {
     try {
-        if(currentTask.task !== updatedTaskMsg.value) {
-            await taskStore.updateTask(currentTask.id, updatedTaskMsg.value);
-        } else {
-            await taskStore.updateTask(currentTask.id); 
-        }
-        updatedTaskMsg.value = currentTask.task;
-        showUpdateTask.value = false;
+        await taskStore.updateTask(currentTask.value.id, newTaskMessage.value, currentTask.value.is_complete);
+
+        //newTaskMessage.value = currentTask.task;
+        updateTaskVisible.value = false;
     } catch (error) {
         console.log("There was an Error in updateTask:", error.message);
         errorStore.addNewError( { message: error.message || 'Failed to update task. Please try again.' } );
     }
 }
 
-const deleteTask = async (taskId) => {
+const toggleComplete = async () => {
+  try {
+    await taskStore.updateTask(currentTask.value.id, null, !currentTask.value.is_complete)
+  } catch (error) {
+    errorStore.addNewError({ message: error.message || 'Failed to toggle complete.' })
+  }
+}
+
+const deleteTask = async () => {
     try {
-        await taskStore.deleteTask(taskId);
+        await taskStore.deleteTask(currentTask.value.id);
     } catch (error) {
         console.log("There was an Error in deleteTask:", error);
         errorStore.addNewError( { message: error.message || 'Failed to delete task. Please try again.' } );

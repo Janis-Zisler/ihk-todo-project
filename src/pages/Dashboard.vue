@@ -1,19 +1,3 @@
-<script setup lang="ts">
-import { useTaskStore } from '@/store/task';
-import { ref, onMounted } from 'vue';
-import NewTask from '@/components/NewTask.vue';
-import TaskItem from '@/components/TaskItem.vue';
-
-const taskStore = useTaskStore();
-const filters = ref(['All', 'Completed', 'Pending']);
-const selectedFilter = ref('All');
-
-const showNewTask = ref(false);
-onMounted(async () => {
-  await taskStore.fetchTasks();
-})
-</script>
-
 <template class="dashboard">
     <v-card>
         <v-container>
@@ -56,7 +40,7 @@ onMounted(async () => {
                         <TaskItem 
                             v-for="task in taskStore.tasks"
                             :key="task.id"
-                            :taskID="task.id"
+                            :task="task"
                         />
                     </v-list>
                 </v-col>
@@ -64,3 +48,21 @@ onMounted(async () => {
         </v-container>
     </v-card>
 </template>
+
+<script setup>
+import { useTaskStore } from '@/store/task';
+import { ref, onMounted } from 'vue';
+import NewTask from '@/components/NewTask.vue';
+import TaskItem from '@/components/TaskItem.vue';
+
+const taskStore = useTaskStore();
+const filters = ref(['All', 'Completed', 'Pending']);
+const selectedFilter = ref('All');
+const showNewTask = ref(false);
+
+//
+onMounted(async () => {
+  await taskStore.fetchTasks();
+})
+</script>
+
