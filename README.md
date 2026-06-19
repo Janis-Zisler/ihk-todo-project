@@ -1,4 +1,4 @@
-# IHK Todo Project
+# Ironhack Todo Project
 
 A Vue 3 + Vite todo application with Supabase authentication and task persistence.
 
