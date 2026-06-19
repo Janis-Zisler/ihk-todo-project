@@ -1,19 +1,31 @@
 <template class="dashboard">
     <v-card>
         <v-container>
-            <v-row>
-                <v-col>
+            <v-row class="justify-space-between">
+                <v-col
+                    cols="12"
+                    xs="12"
+                    sm="6"
+                    md="4"
+                    lgAndUp="2"
+                >
                     <v-btn 
                         prepend-icon="mdi-plus"
                         color="info"
                         size="large"
                         @click="showNewTask = true"
+                        block
                     >
                         Add Task
                     </v-btn>
                 </v-col>
-                <VSpacer />
-                <v-col>
+                <v-col 
+                    cols="12"
+                    xs="12"
+                    sm="6"
+                    md="4"
+                    lgAndUp="2"
+                >
                     <v-select 
                         label="" 
                         :items="filters" 
@@ -31,7 +43,7 @@
             <v-row>
                 <v-col>
                     <v-list>
-                        <v-list-item v-if="showNewTask">
+                        <v-list-item v-if="showNewTask" class="border-md border-opacity-25 border-info border-dashed rounded ma-1">
                             <NewTask @close="showNewTask = false" />
                         </v-list-item>
                         

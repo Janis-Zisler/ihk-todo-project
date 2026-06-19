@@ -2,7 +2,7 @@
     <v-app-bar 
       color="" 
       class="px-4" 
-      rounded="true"
+      :rounded="true"
     >
       <template #prepend>
         <v-app-bar-nav-icon />

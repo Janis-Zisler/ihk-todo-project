@@ -1,5 +1,5 @@
 <template>
-    <v-list-item>
+    <v-list-item class="border-md border-opacity-25 border-info border-dashed rounded my-1">
         <template #prepend>
             <v-checkbox
                 :model-value="currentTask.is_complete"
