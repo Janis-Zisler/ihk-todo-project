@@ -85,7 +85,7 @@ export const useTaskStore = defineStore("tasks", {
         [task.id]: index
       }
     }, {}),
-    orderedTasks: (state) => state.tasks.reduce((tasks, task, index) => {
+    orderedTasks: (state) => state.tasks.reduce((tasks, task) => {
       if (task.is_complete) tasks.completed.push(task);
       else tasks.ongoing.push(task);
       return tasks;

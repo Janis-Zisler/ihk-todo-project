@@ -3,7 +3,6 @@
 import { defineStore } from 'pinia';
 import { supabase } from '@/utils/supabase';
 import router from '@/router';
-import { useTheme } from 'vuetify'
 import { useTaskStore } from './task';
 
 export const useUserStore = defineStore('user', {

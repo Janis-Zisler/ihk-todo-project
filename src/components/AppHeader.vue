@@ -1,5 +1,5 @@
 <template>
-  <Nav v-model="drawer" />
+  <NavDrawer v-model="drawer" />
     <v-app-bar 
       color="" 
       class="px-4" 
@@ -67,13 +67,13 @@ import { storeToRefs } from 'pinia'
 import { useUserStore } from '@/store/user.js'
 import { useErrorStore } from '@/store/error.js'
 import { useRouter } from 'vue-router'
-import Nav from './Nav.vue'
+import NavDrawer from './NavDrawer.vue'
 
 const userStore = useUserStore();
 const vuetifyTheme = useTheme();
 const errorStore = useErrorStore();
 
-const { user, theme } = storeToRefs(userStore);
+const { theme } = storeToRefs(userStore);
 const ruter = useRouter();
 
 const display = useDisplay();

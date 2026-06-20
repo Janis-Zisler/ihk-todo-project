@@ -97,9 +97,9 @@ const updateTaskMessage = async () => {
 
         //newTaskMessage.value = currentTask.task;
         updateTaskVisible.value = false;
-    } catch (error) {
+    } catch (_error) {
         errorStore.addNewError( { 
-            //message: error.message || 'Failed to update task. Please try again.' 
+            //message: _error.message || 'Failed to update task. Please try again.' 
             message: 'Failed to update task. Please try again. (min 4 characters)'
         } );
     }

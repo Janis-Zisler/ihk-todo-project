@@ -38,7 +38,7 @@ export const useErrorStore = defineStore('error', () => {
     }
     
     // Watch for changes in the error list delete expired errors
-    watch(errorList, (newList, oldList) => {
+    watch(errorList, (newList) => {
         newList.forEach((errorItem,index) => {
             if(errorItem.autoDelete && !errorItem.showError){
                 errorList.value.splice(index, 1); 

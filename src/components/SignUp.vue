@@ -68,9 +68,6 @@
 <script setup>
 import { ref, reactive, computed, toRefs } from 'vue'
 
-import { useRouter } from 'vue-router'
-const router = useRouter()
-
 import { useUserStore } from '@/store/user.js'
 const userStore = useUserStore()
 

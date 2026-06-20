@@ -30,15 +30,15 @@
 import { ref, reactive } from 'vue'
 import { useTaskStore } from '@/store/task.js'
 import { useErrorStore } from '@/store/error.js'
-const errorStore = useErrorStore();
 
 const emit = defineEmits(['close'])
+const errorStore = useErrorStore();
 const taskStore = useTaskStore()
 const newTodoTask = ref('')
 const isLoading = ref(false)
 
 const errorObj = reactive({
-    errorMessage: '',
+    message: '',
 });
 
 const addTask = async () => {
@@ -49,15 +49,11 @@ const addTask = async () => {
         newTodoTask.value = '';
         isLoading.value = false
         emit('close');
-    } catch (error) {
-        //errorObj.message = error.message || 'Failed to add task. Please try again.';
+    } catch (_error) {
+        //errorObj.message = _error.message || 'Failed to add task. Please try again.';
         errorObj.message = 'Failed to add task. Please try again. (min 4 characters)';
         errorStore.addNewError(errorObj);
         isLoading.value = false
     }
-    
-    
 }
-
-
 </script>
