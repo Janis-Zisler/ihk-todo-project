@@ -7,6 +7,7 @@ import vueDevTools from 'vite-plugin-vue-devtools'
 
 // https://vite.dev/config/
 export default defineConfig({
+  base: '/ihk-todo-project/',
   plugins: [
     vue(),
     vuetify({ autoImport: true }),
