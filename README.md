@@ -1,99 +1,154 @@
 # Ironhack Todo Project
 
-A Vue 3 + Vite todo application with Supabase authentication and task persistence.
+A Vue 3 todo application with Supabase authentication, built as a final project for the Ironhack bootcamp. Deployed on GitHub Pages.
+
+🔗 **Live Demo:** [janis-zisler.github.io/ihk-todo-project](https://janis-zisler.github.io/ihk-todo-project/)
 
 ## Features
 
-- Email/password sign up and sign in using Supabase Auth
-- Protected dashboard route for authenticated users
-- Create, update, complete, and delete todo tasks
-- Task filtering by All, Ongoing, and Completed
-- Persistent user session via Pinia + localStorage
-- Responsive UI built with Vuetify 4
+- Email/password sign up and sign in via Supabase Auth
+- Persistent session and theme preference across reloads (Pinia + `pinia-plugin-persistedstate`)
+- Create, update, complete, and delete tasks (full CRUD against Supabase)
+- Task filtering by **All**, **Ongoing**, and **Completed**
+- Light/dark theme toggle
+- Responsive UI built with Vuetify
+- Automatic deployment to GitHub Pages via GitHub Actions
 
-## Built With
+## Tech Stack
 
-- Vue 3
-- Vite
-- Pinia
-- Vue Router
-- Vuetify 4
-- Supabase
-- ESLint
+| Layer       | Technology                          |
+|-------------|--------------------------------------|
+| Framework   | Vue 3 (`<script setup>`)             |
+| Build Tool  | Vite                                 |
+| UI Library  | Vuetify                              |
+| State       | Pinia + Pinia Persist                |
+| Routing     | Vue Router                           |
+| Backend     | Supabase (Auth + Postgres)           |
+| Linting     | ESLint (flat config)                 |
+| Deployment  | GitHub Pages via GitHub Actions      |
 
 ## Project Structure
 
-- `src/main.js` - app entry, router and Pinia registration
-- `src/router/index.js` - app routes: `/auth` and `/`
-- `src/pages/Auth.vue` - authentication page with sign in / sign up tabs
-- `src/pages/Dashboard.vue` - task dashboard with filter and add task UI
-- `src/store/user.js` - user store and Supabase auth actions
-- `src/store/task.js` - task store with Supabase todo CRUD
-- `src/utils/supabase.ts` - Supabase client initialization
-
-## Environment Setup
-
-This project requires Supabase environment variables.
-
-Create a `.env` or `.env.local` file in the project root with:
-
-```env
-VITE_SUPABASE_URL=https://your-supabase-project-url.supabase.co
-VITE_SUPABASE_PUBLISHABLE_KEY=your-public-anon-key
+```
+src/
+├── components/
+│   ├── AppHeader.vue      # Top app bar
+│   ├── NavDrawer.vue      # Navigation drawer
+│   ├── NewTask.vue        # Task creation form
+│   ├── ShowErrorMsg.vue   # Error message display
+│   ├── SignIn.vue         # Sign in form
+│   ├── SignUp.vue         # Sign up form
+│   └── TaskItem.vue       # Single task row (toggle/edit/delete)
+├── pages/
+│   ├── Auth.vue           # Auth page (sign in / sign up)
+│   └── Dashboard.vue      # Task dashboard
+├── plugins/
+│   └── vuetify.js         # Vuetify setup
+├── router/
+│   └── index.js           # Route definitions
+├── store/
+│   ├── error.js           # Centralized error state
+│   ├── task.js            # Task store (CRUD + filtering getters)
+│   └── user.js            # User/session store (auth actions, persisted)
+├── utils/
+│   └── supabase.ts        # Supabase client init
+└── static/
+    └── main.css
 ```
 
-## Supabase Requirements
+## Routes
 
-1. Create a Supabase project.
-2. Enable Email / Password authentication.
-3. Create a `todos` table with columns:
-   - `id` (integer, primary key, auto increment)
-   - `user_id` (text)
-   - `task` (text)
-   - `is_complete` (boolean)
-4. Configure row-level security or policies so authenticated users can read/write their own tasks if needed.
+| Path     | Component       | Description          |
+|----------|------------------|-----------------------|
+| `/`      | `Dashboard.vue`  | Task dashboard        |
+| `/auth`  | `Auth.vue`       | Sign in / Sign up     |
 
-## Installation
+## Getting Started
+
+### Prerequisites
+
+- Node.js `^20.19.0` or `>=22.12.0`
+- A Supabase project
+
+### Installation
 
 ```sh
+git clone https://github.com/Janis-Zisler/ihk-todo-project.git
+cd ihk-todo-project
 npm install
 ```
 
-## Development
+### Environment Variables
+
+Copy `.env.example` to `.env` and fill in your own Supabase credentials:
+
+```sh
+cp .env.example .env
+```
+
+```env
+VITE_SUPABASE_URL=https://your-supabase-project-url.supabase.co
+VITE_SUPABASE_PUBLISHABLE_KEY=your-publishable-key
+```
+
+> ⚠️ `.env` is gitignored — never commit real credentials.
+
+### Supabase Setup
+
+1. Create a Supabase project.
+2. Enable **Email/Password** authentication.
+3. Create a `todos` table:
+
+   | Column        | Type      | Notes                  |
+   |---------------|-----------|--------------------------|
+   | `id`          | `int8`    | primary key, identity   |
+   | `user_id`     | `uuid`    | references `auth.users` |
+   | `task`        | `text`    |                          |
+   | `is_complete` | `boolean` | default `false`         |
+
+4. Enable **Row Level Security (RLS)** on `todos` and add policies so users can only read/write their own rows (e.g. `user_id = auth.uid()`).
+
+### Development
 
 ```sh
 npm run dev
 ```
 
-Open the URL shown in the terminal to view the app.
-
-## Build
+### Build & Preview
 
 ```sh
 npm run build
-```
-
-## Preview Production Build
-
-```sh
 npm run preview
 ```
 
-## Linting
+### Linting
 
 ```sh
 npm run lint
 npm run lint:fix
 ```
 
-## Notes
+## Deployment
 
-- The app automatically checks the current Supabase user on load in `App.vue`.
-- Tasks are fetched from Supabase on dashboard mount.
-- The task store uses `filteredTasks()` to show filtered results.
-- The sign-up flow displays a confirmation dialog when registration succeeds.
+Deployment to GitHub Pages happens automatically via `.github/workflows/deploy.yml` on every push to `main`. The workflow builds the project and publishes the `dist/` folder using `actions/deploy-pages`.
+
+Supabase credentials for the build are pulled from **GitHub Actions repository secrets**:
+
+- `VITE_SUPABASE_URL`
+- `VITE_SUPABASE_PUBLISHABLE_KEY`
+
+The Vite `base` path is set to `/ihk-todo-project/` in `vite.config.js` to match the GitHub Pages subpath.
+
+## State Management Notes
+
+- **`store/user.js`**: holds `user`, `theme`, and form validation `rules`. Persisted via `pinia-plugin-persistedstate` (`pick: ['user', 'theme']`) so session and theme survive page reloads.
+- **`store/task.js`**: holds the `tasks` array and exposes getters (`indexOfId`, `orderedTasks`) plus actions for Supabase CRUD and client-side filtering.
+- **`store/error.js`**: centralized store for surfacing Supabase/auth errors in the UI.
+
+## Legal Notice
+
+This project is publicly deployed and processes personal data (email addresses) via Supabase Auth. As required for public deployments under German law, an **Impressum (§ 5 TMG)** and **Datenschutzerklärung (DSGVO Art. 13)** are planned/included — see the corresponding routes in the app.
 
 ## License
 
-This project does not include a license by default.
-
+This project is licensed under the MIT License — see the [LICENSE](LICENSE) file for details.
