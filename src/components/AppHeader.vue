@@ -1,11 +1,13 @@
 <template>
+  <Nav v-model="drawer" />
     <v-app-bar 
       color="" 
       class="px-4" 
       :rounded="true"
     >
       <template #prepend>
-        <v-app-bar-nav-icon />
+        <v-app-bar-nav-icon
+          @click="drawer = !drawer" />
       </template>
 
       <v-app-bar-title class="text-center">
@@ -59,12 +61,13 @@
 </template>
 
 <script setup>
-import { watch, onMounted,  } from 'vue'
+import { watch, onMounted, ref } from 'vue'
 import { useDisplay, useTheme } from 'vuetify'
 import { storeToRefs } from 'pinia'
 import { useUserStore } from '@/store/user.js'
 import { useErrorStore } from '@/store/error.js'
 import { useRouter } from 'vue-router'
+import Nav from './Nav.vue'
 
 const userStore = useUserStore();
 const vuetifyTheme = useTheme();
@@ -75,6 +78,8 @@ const ruter = useRouter();
 
 const display = useDisplay();
 const { smAndUp, xs } = display;
+
+const drawer = ref(false);
 // Watch for theme changes and apply to Vuetify
 watch(theme, (newTheme) => {
   vuetifyTheme.change(newTheme);

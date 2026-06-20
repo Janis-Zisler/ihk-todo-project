@@ -29,6 +29,7 @@
         </v-card-text>
         <v-card-actions class="justify-center">
             <v-btn 
+                variant="outlined"
                 color="success" 
                 @click="signIn" 
                 :disabled="!formComplete"

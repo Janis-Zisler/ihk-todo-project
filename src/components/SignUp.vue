@@ -32,6 +32,7 @@
         </v-card-text>
         <v-card-actions class="justify-center">
             <v-btn 
+                variant="outlined"
                 color="success" 
                 @click="signUp"
                 :loading=" currentStatus === 'sending-data' ? true : false"
